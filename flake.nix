@@ -9,8 +9,8 @@
   };
   outputs =
     {
-    nix-global,
-    ...
+      nix-global,
+      ...
     }:
     nix-global.lib.mkDevEnv { } (
       pkgs: corePkgs:
@@ -23,17 +23,23 @@
           fetchSubmodules = true;
         };
         compile = pkgs.callPackage ./utils/qmk-compile.nix { inherit qmk-src; };
+        mkKeyboards = pkgs.lib.mapAttrs (
+          name: attrs:
+          compile (
+            attrs
+            // {
+              inherit name;
+              config = ./keyboards/${name}.json;
+            }
+          )
+        );
       in
-        rec {
-        packages = {
-          gmmk_pro = compile {
-            name = "gmmk_pro";
-            config = ./keyboards/gmmk_pro.json;
+      rec {
+        packages = mkKeyboards {
+          gmmk_pro = {
             ext = "bin";
           };
-          corne = compile {
-            name = "corne";
-            config = ./keyboards/corne.json;
+          corne = {
             ext = "uf2";
             is_rp2040 = true;
           };
@@ -54,7 +60,7 @@
             pkgs.qmk
             pkgs.dos2unix
           ]
-            ++ corePkgs;
+          ++ corePkgs;
           shellHook = ''
             export QMK_HOME="${qmk-src}"
           '';

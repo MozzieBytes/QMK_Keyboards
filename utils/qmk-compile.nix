@@ -11,7 +11,7 @@
   is_rp2040 ? false,
 }:
 let
-  fwExtensions = [
+  supportedExtensions = [
     "hex"
     "bin"
     "elf"
@@ -21,7 +21,7 @@ let
   ];
   buildDir = "build";
 in
-assert lib.elem ext fwExtensions;
+assert lib.elem ext supportedExtensions;
 stdenv.mkDerivation {
   name = "${name}.${ext}";
   src = qmk-src;
