@@ -22,30 +22,31 @@
           sha256 = "sha256-jibfaqh4uTx2sWyQ9V5qiUoe9B+8jK3g1WXNfs2xArg=";
           fetchSubmodules = true;
         };
-        qmk = pkgs.callPackage ./modules/qmk.nix { inherit qmk-src; };
+        compile = pkgs.callPackage ./utils/qmk-compile.nix { inherit qmk-src; };
       in
       {
-        packages = with qmk; {
-          gmmk_pro = {
-            compile = compile {
-              name = "gmmk_pro";
-              config = ./keyboards/gmmk_pro.json;
-            };
-            flash = flash {
-              fw = gmmk_pro.compile;
-              ext = "bin";
-            };
+        packages = {
+          inherit qmk-src;
+          gmmk_pro = compile {
+            name = "gmmk_pro";
+            config = ./keyboards/gmmk_pro.json;
+            ext = "bin";
           };
-          corne = {
-            compile = compile {
-              name = "corne";
-              config = ./keyboards/corne.json;
-              is_rp2040 = true;
-            };
+          corne = compile {
+            name = "corne";
+            config = ./keyboards/corne.json;
+            is_rp2040 = true;
           };
         };
         devShells.default = pkgs.mkShell {
-          buildInputs = corePkgs;
+          buildInputs = [
+            pkgs.qmk
+            pkgs.dos2unix
+          ]
+          ++ corePkgs;
+          shellHook = ''
+            export QMK_HOME="${qmk-src}"
+          '';
         };
       }
     );
