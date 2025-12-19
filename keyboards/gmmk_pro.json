@@ -3,7 +3,7 @@
   "notes": "",
   "version": 1,
   "keyboard": "gmmk/pro/rev1/ansi",
-  "keymap": "gmmk_pro_rev1_ansi_20250329",
+  "keymap": "gmmk_pro",
   "layout": "LAYOUT",
   "layers": [
     [
@@ -347,5 +347,5 @@
       "KC_TRNS"
     ]
   ],
-  "author": ""
+  "author": "TMB"
 }
