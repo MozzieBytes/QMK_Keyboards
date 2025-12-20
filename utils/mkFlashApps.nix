@@ -12,7 +12,7 @@ lib.mapAttrs (
 
       export QMK_HOME="${qmk-src}"
 
-      ${pkgs.qmk} flash ${fw}
+      ${pkgs.qmk}/bin/qmk flash ${fw}
     ''}";
   }
 )
