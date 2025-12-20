@@ -10,7 +10,7 @@ pkgs.lib.mapAttrs (
     attrs
     // {
       inherit pkgs lib stdenv qmk-src name;
-      config = ../keyboards/${name}.json;
+      config = ../configs/${name}.json;
     }
   )
 )
