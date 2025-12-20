@@ -22,20 +22,11 @@
           sha256 = "sha256-jibfaqh4uTx2sWyQ9V5qiUoe9B+8jK3g1WXNfs2xArg=";
           fetchSubmodules = true;
         };
-        compile = pkgs.callPackage ./utils/qmk-compile.nix { inherit qmk-src; };
-        mkKeyboards = pkgs.lib.mapAttrs (
-          name: attrs:
-          compile (
-            attrs
-            // {
-              inherit name;
-              config = ./keyboards/${name}.json;
-            }
-          )
-        );
+        mkQmkFw = pkgs.callPackage ./utils/mkQmkFw.nix { inherit qmk-src; };
+        mkFlashApps = pkgs.callPackage ./utils/mkFlashApps.nix { inherit qmk-src; };
       in
       rec {
-        packages = mkKeyboards {
+        packages = mkQmkFw {
           gmmk_pro = {
             ext = "bin";
           };
@@ -44,17 +35,7 @@
             is_rp2040 = true;
           };
         };
-        apps = pkgs.lib.mapAttrs (name: fw: {
-          type = "app";
-          program = "${pkgs.writeScript "flash-${name}" ''
-            #!/usr/bin/env bash
-            set -euo pipefail
-
-            export QMK_HOME="${qmk-src}"
-
-            qmk flash ${fw}
-          ''}";
-        }) packages;
+        apps = mkFlashApps packages;
         devShells.default = pkgs.mkShell {
           buildInputs = [
             pkgs.qmk
