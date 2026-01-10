@@ -3,10 +3,11 @@
   lib,
   stdenv,
   qmk-src,
+  qmkCompile ? import ./qmkCompile.nix
 }:
 pkgs.lib.mapAttrs (
   name: attrs:
-  import ./qmkCompile.nix (
+  qmkCompile (
     attrs
     // {
       inherit pkgs lib stdenv qmk-src name;

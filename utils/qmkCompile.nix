@@ -27,11 +27,10 @@ else
     name = "${name}.${ext}";
     src = qmk-src;
     buildInputs = with pkgs; [
-      qmk
       dos2unix
     ];
     buildPhase = ''
-          qmk compile \
+          ${pkgs.qmk}/bin/env compile \
             --env SKIP_GIT=true \
             --env BUILD_DIR=${buildDir} \
       ${lib.optionalString (is_rp2040) "--env CONVERT_TO=rp2040_ce"} \
